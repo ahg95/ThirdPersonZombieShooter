@@ -4,10 +4,22 @@ using UnityEngine;
 public class MovementController : MonoBehaviour
 {
     [HideInInspector]
+    public bool _MovementEnabled;
+
+    [HideInInspector]
     public Vector2 _MovementInput;
 
     [Header("General")]
     public float _TopSpeed;
+
+    [HideInInspector]
+    public float _CurrentTopSpeed;
+
+    [SerializeField]
+    Rigidbody _rigidbody;
+
+    [SerializeField]
+    CapsuleCollider _collider;
 
     [SerializeField]
     LayerMask _groundLayer;
@@ -83,11 +95,6 @@ public class MovementController : MonoBehaviour
     [Tooltip("The maximum distance at which the controller will avoid an obstacle.")]
     public float _DetectionDistance;
 
-    Rigidbody _rigidbody;
-
-    CapsuleCollider _collider;
-
-
     // The following functions define the acceleration and deceleration of the player.
     // The x axis of these functions describe the time, and the y axis describe the speed of the player.
     [SerializeField, HideInInspector]
@@ -115,8 +122,9 @@ public class MovementController : MonoBehaviour
 
     void Awake()
     {
-        _rigidbody = GetComponent<Rigidbody>();
-        _collider = GetComponent<CapsuleCollider>();
+        _CurrentTopSpeed = _TopSpeed;
+
+        _MovementEnabled = true;
 
         UpdateAccelerationFunction();
         UpdateDecelerationFunction();
@@ -126,6 +134,13 @@ public class MovementController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!_MovementEnabled)
+        {
+            var currentVelocity = _rigidbody.linearVelocity;
+
+            _previousVelocity2D = new Vector2(currentVelocity.x, currentVelocity.z);
+        }
+
         // Calculate the next velocity of the player.
         var movementInput = _MovementInput;
 
@@ -139,11 +154,11 @@ public class MovementController : MonoBehaviour
             }
         }
 
-        // Update the previous velocity.
-        _previousVelocity2D = new Vector2(newVelocity.x, newVelocity.z);
-
         // Apply the new velocity.
         _rigidbody.linearVelocity = newVelocity;
+
+        // Update the previous velocity.
+        _previousVelocity2D = new Vector2(newVelocity.x, newVelocity.z);
 
         // Snap the player model to the ground.
         SnapToGround();
@@ -244,7 +259,7 @@ public class MovementController : MonoBehaviour
     Vector3 CalculateNextVelocity(Vector2 previousVelocity2D, Vector3 currentVelocity, Vector2 movementInput)
     {
         // Calculate the target velocity as a two-dimensional vector.
-        var targetVelocity2D = movementInput * _TopSpeed;
+        var targetVelocity2D = movementInput * _CurrentTopSpeed;
 
         // The current velocity will attempt to transition to the target velocity in a straight line.
         // Note that the damping that is applied later can create a curve in the transition.

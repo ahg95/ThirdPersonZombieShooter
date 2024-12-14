@@ -2,50 +2,43 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    [Header("References")]
     [SerializeField]
     MovementController _movementController;
 
     [SerializeField]
-    float _mouseSensititvity;
+    Transform _cameraPivot;
+
+    [Header("Configurations")]
+    [SerializeField]
+    float _runTopSpeed;
 
     [SerializeField]
-    Transform _cameraTransform;
+    float _aimWalkTopSpeed;
 
-    [SerializeField]
-    Transform _bodyTransform;
-
-    float _localXRotation;
-    float _localYRotation;
-
-    PlayerInput _playerInput;
+    PlayerInput _input;
 
     private void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-
-        _localXRotation = transform.localRotation.x;
-        _localYRotation = transform.localRotation.y;
-
         // Initialize and enable player input.
-        _playerInput = new PlayerInput();
-        _playerInput.Gameplay.Enable();
+        _input = new PlayerInput();
+        _input.Gameplay.Movement.Enable();
+        _input.Gameplay.Aim.Enable();
     }
 
-    void Update()
+    void LateUpdate()
     {
-        // Look around.
-        var lookDelta = _playerInput.Gameplay.Look.ReadValue<Vector2>() * Time.deltaTime * _mouseSensititvity;
+        // Set current top speed.
+        var isAiming = _input.Gameplay.Aim.ReadValue<float>() != 0;
 
-        _localXRotation = Mathf.Clamp(_localXRotation - lookDelta.y, -90, 90);
-        _localYRotation += lookDelta.x;
-        _cameraTransform.localRotation = Quaternion.Euler(_localXRotation, _localYRotation, 0);
+        _movementController._CurrentTopSpeed = isAiming ? _aimWalkTopSpeed : _runTopSpeed;
 
 
 
-        // Move.
-        var movementInput = _playerInput.Gameplay.Movement.ReadValue<Vector2>();
+        // Set movement input.
+        var movementInput = _input.Gameplay.Movement.ReadValue<Vector2>();
 
-        movementInput = Rotate(movementInput, - _localYRotation * Mathf.Deg2Rad);
+        movementInput = Rotate(movementInput, -_cameraPivot.eulerAngles.y * Mathf.Deg2Rad);
 
         _movementController._MovementInput = movementInput;
     }

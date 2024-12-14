@@ -220,4 +220,11 @@ public static class EasingFunction
 
         return x + Mathf.Pow(2, -10 * x) / (10 * Mathf.Log(2));
     }
+
+
+
+    public static float EaseBezier(float x)
+    {
+        return x * x * (3.0f - 2.0f * x);
+    }
 }
