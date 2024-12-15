@@ -25,11 +25,20 @@ public class AnimationController : MonoBehaviour
     [SerializeField]
     float _aimWalkAnimationSpeed;
 
+    [SerializeField]
+    float _aimAnimationSmoothingFactor;
+
     Animator _animatorController;
 
     float _angularVelocity = 0;
 
     PlayerInput _input;
+
+    float _forwardSpeed;
+    float _sidewaysSpeed;
+
+    float _forwardVelocity;
+    float _sidewaysVelocity;
 
     private void Awake()
     {
@@ -43,13 +52,19 @@ public class AnimationController : MonoBehaviour
     {
         bool isAiming = _input.Gameplay.Aim.ReadValue<float>() != 0;
 
-
-        
         // Change the animator's animation speed based on the movement controller's top speed.
         // This prevents foot slipping when the top speed is changed.
         var animationSpeed = isAiming ? _aimWalkAnimationSpeed : _runAnimationSpeed;
 
         _animatorController.speed = _movementController._CurrentTopSpeed / animationSpeed;
+
+
+
+        // Set the upper body layer weight depending on if the player is aiming.
+        // This essentially reduces the movement of the upper body when aiming.
+        //_animatorController.SetLayerWeight(1, isAiming ? 0.5f : 0f);
+
+
 
 
 
@@ -99,10 +114,19 @@ public class AnimationController : MonoBehaviour
         // - Calculate the movement speed in the forward direction.
         var forwardSpeed = currVelFlattened.magnitude * Mathf.Cos(Vector3.Angle(transform.forward, currVelFlattened) * Mathf.Deg2Rad);
 
+        _forwardSpeed = Mathf.SmoothDamp(_forwardSpeed, forwardSpeed, ref _forwardVelocity, _aimAnimationSmoothingFactor);
+        if (isAiming)
+            forwardSpeed = _forwardSpeed;
+
         _animatorController.SetFloat("ForwardSpeed", forwardSpeed / _movementController._CurrentTopSpeed);
 
         // - Calculate the movement speed in the right direction.
         var sidewaysSpeed = currVelFlattened.magnitude * Mathf.Cos(Vector3.Angle(transform.right, currVelFlattened) * Mathf.Deg2Rad);
+
+        // - Smooth out the animation parameter if the player is aiming. Otherwise, the animations look too jerky.
+        _sidewaysSpeed = Mathf.SmoothDamp(_sidewaysSpeed, sidewaysSpeed, ref _sidewaysVelocity, _aimAnimationSmoothingFactor);
+        if (isAiming)
+            sidewaysSpeed = _sidewaysSpeed;
 
         _animatorController.SetFloat("SidewaysSpeed", sidewaysSpeed / _movementController._CurrentTopSpeed);
     }
