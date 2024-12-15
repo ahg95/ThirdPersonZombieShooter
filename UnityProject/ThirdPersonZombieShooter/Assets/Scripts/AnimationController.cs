@@ -61,8 +61,18 @@ public class AnimationController : MonoBehaviour
 
 
         // Set the upper body layer weight depending on if the player is aiming.
-        // This essentially reduces the movement of the upper body when aiming.
-        //_animatorController.SetLayerWeight(1, isAiming ? 0.5f : 0f);
+        // The second layer is responsible for setting the up and down angle of aiming.
+        _animatorController.SetLayerWeight(1, isAiming ? 1f : 0f);
+
+        var angle = _camera.rotation.eulerAngles.x;
+        if (angle > 90)
+            angle -= 360;
+
+        var aimHeight = -angle / 60f;
+
+        // Set the aim angle if the player is aiming.
+        _animatorController.SetFloat("AimHeight", aimHeight);
+
 
 
 
