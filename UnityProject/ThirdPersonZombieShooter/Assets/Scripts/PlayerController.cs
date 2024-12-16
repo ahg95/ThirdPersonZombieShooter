@@ -28,18 +28,16 @@ public class PlayerController : MonoBehaviour
 
     void LateUpdate()
     {
-        // Set current top speed.
+        // Adjust top speed depending on if the player is aiming or not.
         var isAiming = _input.Gameplay.Aim.ReadValue<float>() != 0;
-
         _movementController._CurrentTopSpeed = isAiming ? _aimWalkTopSpeed : _runTopSpeed;
 
 
 
-        // Set movement input.
+        // Set the movement input for the movement controller.
         var movementInput = _input.Gameplay.Movement.ReadValue<Vector2>();
-
+        // - Rotate the movement input based on the camera angle.
         movementInput = Rotate(movementInput, -_cameraPivot.eulerAngles.y * Mathf.Deg2Rad);
-
         _movementController._MovementInput = movementInput;
     }
 
