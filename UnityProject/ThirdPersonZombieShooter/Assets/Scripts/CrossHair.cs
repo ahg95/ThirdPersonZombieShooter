@@ -33,7 +33,6 @@ public class CrossHair : MonoBehaviour
         // Initialize and enable input.
         _input = new();
         _input.Gameplay.Aim.Enable();
-        _input.Gameplay.Shoot.Enable();
 
         _appearAnimationProgress = 0;
 
@@ -42,12 +41,6 @@ public class CrossHair : MonoBehaviour
         _rightPos = _right.position;
         _bottomPos = _bottom.position;
         _leftPos = _left.position;
-
-        // Add callback for when the player shoots.
-        _input.Gameplay.Shoot.performed += (cc) =>
-        {
-            _unsteadyAnimationProgress = Mathf.Clamp01(_unsteadyAnimationProgress + 0.5f);
-        };
     }
 
     void Update()
@@ -57,30 +50,34 @@ public class CrossHair : MonoBehaviour
 
 
 
-        // Play appearance animation.
+        // Set cross hair alpha based on if the player aims or not.
         var appearAnimationDelta = Time.deltaTime / _appearAnimationDuration;
-
         if (!appear)
             appearAnimationDelta = -appearAnimationDelta;
-
         _appearAnimationProgress = Mathf.Clamp01(_appearAnimationProgress + appearAnimationDelta);
-
         _crossHair.alpha = _appearAnimationProgress;
 
 
 
-        // Move crosshair arms.
+        // Move crosshair arms based on how unsteady the weapon is.
+        // - Progress the animation.
         var unsteadyAnimationDelta = Time.deltaTime / _unsteadyAnimationDuration;
         if (appear)
             unsteadyAnimationDelta = - unsteadyAnimationDelta;
-
         _unsteadyAnimationProgress = Mathf.Clamp01(_unsteadyAnimationProgress + unsteadyAnimationDelta);
 
+        // - Apply easing to the animation.
         var t = EasingFunction.EaseInCirc(_unsteadyAnimationProgress);
 
+        // - Set cross hair arm positions.
         _top.position = _topPos + Vector2.up * _displacement * t;
         _right.position = _rightPos + Vector2.right * _displacement * t;
         _bottom.position = _bottomPos + Vector2.down * _displacement * t;
         _left.position = _leftPos + Vector2.left * _displacement * t;
+    }
+
+    public void RegisterShot()
+    {
+        _unsteadyAnimationProgress = Mathf.Clamp01(_unsteadyAnimationProgress + 0.5f);
     }
 }
