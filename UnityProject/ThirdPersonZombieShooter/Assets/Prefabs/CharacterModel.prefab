@@ -94,7 +94,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aeda7bfbf984f2a4da5ab4b8967b115d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Weight: 1
+  m_Weight: 0
   m_Data:
     m_Root: {fileID: 1253807116518284875}
     m_Mid: {fileID: 529684183522321299}
@@ -307,7 +307,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aeda7bfbf984f2a4da5ab4b8967b115d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Weight: 1
+  m_Weight: 0
   m_Data:
     m_Root: {fileID: 4150302297266803242}
     m_Mid: {fileID: 7743021651505350033}
@@ -333,7 +333,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9e1260d4cf267de40aad2fa841528933, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 9e1260d4cf267de40aad2fa841528933, type: 3}
       propertyPath: m_LocalPosition.z
@@ -466,6 +466,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9e1260d4cf267de40aad2fa841528933, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7431304653516284410}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9e1260d4cf267de40aad2fa841528933, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5179570407534872516}
   m_SourcePrefab: {fileID: 100100000, guid: 9e1260d4cf267de40aad2fa841528933, type: 3}
 --- !u!4 &331806782891990795 stripped
 Transform:
@@ -774,6 +777,26 @@ MonoBehaviour:
   - {fileID: 1205554352974410105}
   - {fileID: 3959099766374196328}
   - {fileID: 3594001546679832238}
+--- !u!1818360608 &5179570407534872516
+PositionConstraint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5049650701225162686}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Weight: 1
+  m_TranslationAtRest: {x: 0, y: 0, z: 0}
+  m_TranslationOffset: {x: 0, y: -1, z: 0}
+  m_AffectTranslationX: 1
+  m_AffectTranslationY: 1
+  m_AffectTranslationZ: 1
+  m_Active: 1
+  m_IsLocked: 0
+  m_Sources:
+  - sourceTransform: {fileID: 0}
+    weight: 1
 --- !u!4 &5171173888037757020 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8281789724509934925, guid: 9e1260d4cf267de40aad2fa841528933, type: 3}
